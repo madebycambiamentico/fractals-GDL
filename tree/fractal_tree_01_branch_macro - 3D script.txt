@@ -1,0 +1,54 @@
+!stop recursive script if more than 10 recursions
+!or radius too small
+IF irecursion > imaxrecursions OR fR < fminR THEN END
+irecursion = irecursion+1
+
+IF dynamic_res THEN
+	!resolution radius-dependent: poly with 1.5cm edge 
+	RESOL MIN(100, MAX(3, INT(2*PI*fR/0.015)))
+ELSE
+	!constant resolution (res)
+	RESOL res
+ENDIF
+
+!initial rotation
+if rot_x OR rot_y OR rot_z THEN
+	ROT rot_x, rot_y, rot_z, rot_alpha
+ELSE
+	IF rot_alpha THEN
+		ROTZ rot_alpha
+	ELSE
+		ROTX rnd(90)
+	ENDIF
+ENDIF
+
+!branch
+r2 = fR*(freduce/100)
+h2 = fH*(freduce/100)
+MATERIAL mat
+CONE fH,fR,r2,90,90
+
+!add child branches
+inextgenerationbranches = MIN(ibranches, MAX(2, ibranches*3/irecursion))
+ADDZ fH
+FOR i=1 TO ibranches
+	ROTZ 360/ibranches
+	IF randomize THEN ROTZ RND(90/ibranches)
+	call "fractal_tree_01_branch_macro", PARAMETERS irecursion = irecursion,
+		fR = r2,
+		fH = h2,
+		freduce = freduce,
+		rot_x = rot_x,
+		rot_y = rot_y,
+		rot_z = rot_z,
+		rot_alpha = rot_alpha,
+		ibranches = inextgenerationbranches,
+		randomize = randomize,
+		imaxrecursions = imaxrecursions,
+		dynamic_res = dynamic_res,
+		fminR = fminR,
+		res = res,
+		mat = mat
+NEXT i
+
+DEL TOP

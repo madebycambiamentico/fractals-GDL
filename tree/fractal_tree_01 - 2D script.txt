@@ -1,0 +1,42 @@
+IF auto_projection THEN
+	PROJECT2 3, 0, 1
+	END
+ENDIF
+
+dy = ZZYZX*SIN(rot_alpha)
+fred = freduce/100
+rb = A/2
+rt = rb*fred
+
+
+!trunk base
+CIRCLE2 0,0, rb
+!trunk top
+CIRCLE2 0,dy, rt
+!trunk axis
+LINE2 0,0, 0,dy
+!trunk sides
+angtan = 90-ACS((rb-rt)/dy)
+LINE2 rt*COS(angtan),dy+rt*SIN(angtan), rb*COS(angtan),rb*SIN(angtan)
+LINE2 -rt*COS(angtan),dy+rt*SIN(angtan), -rb*COS(angtan),rb*SIN(angtan)
+
+ADD2 0,dy
+
+rc = 0
+last_length = fH
+IF fH_auto THEN last_length = ZZYZX*fred
+FOR i=1 TO imaxrecursions
+	rc = rc+last_length*SIN(i*rot_alpha_branch)
+	last_length = last_length*fred
+NEXT i
+
+!trunk chioma
+CIRCLE2 0,0, rc
+!first branches
+g = 360/ibranches
+dg = RND(g)
+FOR j=0 TO ibranches-1
+	LINE2 0,0, rc/2*COS(j*g+dg),rc/2*SIN(j*g+dg)
+	LINE2 rt*COS(j*g+dg+60),rt*SIN(j*g+dg+60), rc/2*COS(j*g+dg),rc/2*SIN(j*g+dg)
+	LINE2 rt*COS(j*g+dg-60),rt*SIN(j*g+dg-60), rc/2*COS(j*g+dg),rc/2*SIN(j*g+dg)
+NEXT j

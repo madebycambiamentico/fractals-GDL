@@ -1,0 +1,66 @@
+IF dynamic_res THEN
+	!resolution radius-dependent: poly with 1.5cm edge 
+	RESOL MIN(100, MAX(3, INT(PI*A/0.015)))
+ELSE
+	!constant resolution (res)
+	RESOL res
+ENDIF
+
+!------------------------
+!initial trunk inclination
+!------------------------
+if rot_alpha THEN
+	ROTY rot_alpha
+ENDIF
+
+!------------------------
+! create trunk
+!------------------------
+rtop = A/2*(freduce/100)
+MATERIAL mat
+CONE ZZYZX, A/2,rtop, 90-rot_alpha,90-rot_alpha
+
+
+!------------------------
+! set child branches sizes
+!------------------------
+IF fH_auto THEN
+	h2 = ZZYZX*(freduce/100)
+ELSE
+	h2 = fH
+ENDIF
+IF fR_auto THEN
+	r2 = rtop
+ELSE
+	r2 = fR/2
+ENDIF
+
+!------------------------
+! add child branches
+!------------------------
+ADDZ ZZYZX
+!revert to vertical growth
+IF rot_alpha THEN
+	ROTY -rot_alpha
+ENDIF
+FOR i=1 TO ibranches
+	ROTZ 360/ibranches
+	IF randomize THEN ROTZ RND(90/ibranches)
+	call "fractal_tree_01_branch_macro", PARAMETERS irecursion = irecursion,
+		fR = r2,
+		fH = h2,
+		freduce = freduce,
+		rot_x = 1,
+		rot_y = 0,
+		rot_z = 0,
+		rot_alpha = rot_alpha_branch,
+		ibranches = ibranches,
+		randomize = randomize,
+		imaxrecursions = imaxrecursions,
+		dynamic_res = dynamic_res,
+		fminR = fminR,
+		res = res,
+		mat = mat
+NEXT i
+
+DEL TOP

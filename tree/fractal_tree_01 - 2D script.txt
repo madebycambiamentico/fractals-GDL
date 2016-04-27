@@ -16,9 +16,11 @@ CIRCLE2 0,dy, rt
 !trunk axis
 LINE2 0,0, 0,dy
 !trunk sides
-angtan = 90-ACS((rb-rt)/dy)
-LINE2 rt*COS(angtan),dy+rt*SIN(angtan), rb*COS(angtan),rb*SIN(angtan)
-LINE2 -rt*COS(angtan),dy+rt*SIN(angtan), -rb*COS(angtan),rb*SIN(angtan)
+IF dy > rb-rt THEN
+	angtan = 90-ACS((rb-rt)/dy)
+	LINE2 rt*COS(angtan),dy+rt*SIN(angtan), rb*COS(angtan),rb*SIN(angtan)
+	LINE2 -rt*COS(angtan),dy+rt*SIN(angtan), -rb*COS(angtan),rb*SIN(angtan)
+ENDIF
 
 ADD2 0,dy
 

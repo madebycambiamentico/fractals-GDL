@@ -7,6 +7,7 @@ Branches growth angle can be adjusted in UI parameters.
 Other parameters:
 - size reduction of trunk/branches from base to top
 - initial height and diameter of trunk/branches (branches sizes can be automatically determined from the trunk sizes)
+- branches position can be randomized so they don't look so ripetitive (see sample image)
 - material
 - resolution (dynamic too: reduces proportionally, up to 3 edges if branches are very thin)
 - max recursion (default: 7) and min branch diameter.
